@@ -1,4 +1,6 @@
 from flask import Flask, jsonify, request
+import requests
+from urllib.parse import urlparse
 from challenge.app.auth import issue_token, verify_token, admin_gate
 
 FS1 = "FS1_recon_a17c"
@@ -50,6 +52,28 @@ def create_app() -> Flask:
             note="import fetches a feed URL server-side; default engine runs on loopback:9000",
             hint=FS3,
         )
+
+    @app.post("/api/v1/admin/feeds/import")
+    def admin_import():
+        claims = _bearer()
+        ok, reason = admin_gate(claims)
+        if not ok:
+            code = 403 if reason == "mfa_required" else 401
+            return jsonify(error=reason), code
+        data = request.get_json(silent=True) or {}
+        url = data.get("url", "")
+        parsed = urlparse(url)
+        host = (parsed.hostname or "").lower()
+        # Naive SSRF denylist (CTF): blocks obvious loopback spellings only.
+        if parsed.scheme not in ("http", "https"):
+            return jsonify(error="blocked", reason="scheme"), 400
+        if "localhost" in host or "127.0.0.1" in host:
+            return jsonify(error="blocked", reason="host"), 400
+        try:
+            resp = requests.get(url, timeout=2)
+        except Exception as e:
+            return jsonify(error="fetch_failed", detail=str(e)), 502
+        return jsonify(imported=True, content=resp.text[:800])
 
     return app
 
