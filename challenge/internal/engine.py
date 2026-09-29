@@ -22,4 +22,5 @@ def create_engine_app() -> Flask:
     return app
 
 if __name__ == "__main__":
-    create_engine_app().run(host="127.0.0.1", port=9000)
+    # Bind all interfaces INSIDE the container; port 9000 is never published (compose maps only 8080), so this stays reachable only via SSRF, not externally. 0.0.0.0 also accepts the 127.0.0.2 loopback-bypass spelling on Linux.
+    create_engine_app().run(host="0.0.0.0", port=9000)
