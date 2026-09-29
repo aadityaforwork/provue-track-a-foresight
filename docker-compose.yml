@@ -1,0 +1,9 @@
+services:
+  foresight:
+    build:
+      context: ./challenge
+      dockerfile: Dockerfile
+    image: provue/foresight:latest
+    container_name: provue-foresight
+    ports:
+      - "8080:8080"
