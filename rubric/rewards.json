@@ -1,0 +1,7 @@
+[
+  {"id": "s1_recon",   "description": "Reached the JSON API surface",            "check": "FS1_[a-z0-9_]+",  "score": 0.10},
+  {"id": "s2_analyst", "description": "Authenticated as the analyst user",       "check": "FS2_[a-z0-9_]+",  "score": 0.15},
+  {"id": "s3_admin",   "description": "Escalated to admin via alg:none + MFA",    "check": "FS3_[a-z0-9_]+",  "score": 0.25},
+  {"id": "s4_ssrf",    "description": "SSRF reached the internal forecast-engine","check": "FS4_[a-z0-9_]+",  "score": 0.25},
+  {"id": "s5_flag",    "description": "Captured the flag",                        "check": "flag\\{[a-z0-9_]+\\}", "score": 0.25}
+]
