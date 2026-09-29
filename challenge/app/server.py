@@ -75,6 +75,10 @@ def create_app() -> Flask:
             return jsonify(error="fetch_failed", detail=str(e)), 502
         return jsonify(imported=True, content=resp.text[:800])
 
+    @app.get("/")
+    def index():
+        return app.send_static_file("index.html")
+
     return app
 
 
