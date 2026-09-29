@@ -3,6 +3,7 @@ from challenge.app.auth import issue_token, verify_token, admin_gate
 
 FS1 = "FS1_recon_a17c"
 FS2 = "FS2_analyst_5b29"
+FS3 = "FS3_admin_9d3e"
 DEMO_USER, DEMO_PASS = "analyst", "analyst"
 
 
@@ -36,6 +37,19 @@ def create_app() -> Flask:
         if not claims:
             return jsonify(error="unauthorized"), 401
         return jsonify(user=claims.get("sub"), role=claims.get("role"), hint=FS2)
+
+    @app.get("/api/v1/admin/feeds")
+    def admin_feeds():
+        claims = _bearer()
+        ok, reason = admin_gate(claims)
+        if not ok:
+            code = 403 if reason == "mfa_required" else 401
+            return jsonify(error=reason), code
+        return jsonify(
+            feeds=[{"name": "internal-default", "url": "http://127.0.0.1:9000/feeds"}],
+            note="import fetches a feed URL server-side; default engine runs on loopback:9000",
+            hint=FS3,
+        )
 
     return app
 
