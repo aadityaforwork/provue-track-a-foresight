@@ -11,7 +11,7 @@ def verify_token(token: str):
     except Exception:
         return None
     # DELIBERATE VULNERABILITY (CTF): trust the token's own alg header.
-    if header.get("alg", "").lower() == "none":
+    if str(header.get("alg", "")).lower() == "none":
         try:
             return jwt.decode(token, options={"verify_signature": False})
         except Exception:

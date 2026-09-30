@@ -62,6 +62,8 @@ def create_app() -> Flask:
             return jsonify(error=reason), code
         data = request.get_json(silent=True) or {}
         url = data.get("url", "")
+        if not isinstance(url, str):
+            return jsonify(error="blocked", reason="scheme"), 400
         parsed = urlparse(url)
         host = (parsed.hostname or "").lower()
         # Naive SSRF denylist (CTF): blocks obvious loopback spellings only.

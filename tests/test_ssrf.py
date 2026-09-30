@@ -42,3 +42,9 @@ def test_ssrf_requires_admin_mfa():
     c = create_app().test_client()
     r = c.post("/api/v1/admin/feeds/import", json={"url": "http://2130706433:9000/"})
     assert r.status_code == 401
+
+def test_non_string_url_is_400_not_500():
+    c = create_app().test_client()
+    h = {"Authorization": f"Bearer {forge_admin()}"}
+    r = c.post("/api/v1/admin/feeds/import", json={"url": 123}, headers=h)
+    assert r.status_code == 400
