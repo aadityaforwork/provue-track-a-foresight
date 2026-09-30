@@ -1,0 +1,6 @@
+FS1 = "FS1_recon_a17c"
+FS2 = "FS2_analyst_5b29"
+FS3 = "FS3_admin_9d3e"
+FS4 = "FS4_internal_c8f1"
+FLAG = "flag{f0res1ght_ssrf_pivot_2026}"
+HS256_SECRET = "foresight-hs256-please-rotate"
